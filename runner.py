@@ -5,9 +5,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 import time
+from selenium.webdriver.common.action_chains import ActionChains
 
 driver = webdriver.Chrome(executable_path='C:\TestFiles\chromedriver.exe')
-driver.implicitly_wait(30)
+driver.implicitly_wait(20)
 driver.get('https://www.google.pl/maps/preview')
 
 # jeśli pojawi się przycisk zgadzam się to go kliknij
@@ -25,7 +26,13 @@ user_input.send_keys("Sklep Warszawa")
 time.sleep(3)
 submit_button = driver.find_element(By.XPATH, '//button[@id="searchbox-searchbutton"]')
 submit_button.click()
-# time.sleep(3)
-# znajdź diva w ktorym znajdują się wyniki wyszukiwania
-elements = driver.find_elements(By.XPATH, '//a[@jsaction]')
-elements[0].click()
+time.sleep(3)
+
+# find div with search results
+elements = driver.find_elements(By.XPATH, '//div[contains(@aria-label, "Wyniki dla zapytania")]/div/div/a')
+
+# open first element from 'elements' list in new tab - using Actionchains CTRL+click()
+actions = ActionChains(driver)
+actions.move_to_element(elements[0])
+actions.key_down(Keys.CONTROL).click()
+actions.perform()
