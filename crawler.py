@@ -1,6 +1,8 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.common.action_chains import ActionChains
 import time
 import locators
 
@@ -22,13 +24,36 @@ class GoogleMapsCrawler(Crawler):
         else:
             print('button zgadzam sie is not displayed')
     
+    
     def search(self, search_data = 'Sklep Warszawa'):
         user_input = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
         user_input.send_keys(search_data)
         time.sleep(3)
         submit_button = self.driver.find_element(*locators.SEARCH_BUTTON) 
         submit_button.click()
+    
+    
+    def scroll_down_results(self):
+        results_container = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locators.RESULTS_CONTAINER))
+        verical_ordinate = 100
+        for i in range(0, 31):
+            print(verical_ordinate)
+            self.driver.execute_script("arguments[0].scrollTop = arguments[1]", results_container, verical_ordinate)
+            verical_ordinate += 100
+            time.sleep(1)
+    
+    def open_results(self):
+        results = self.driver.find_elements(*locators.RESULTS)
+        
+        # open all elements from results list in new tab - using Actionchains CTRL+click()
+        for i in range(len(results)-1):
+            actions = ActionChains(self.driver)
+            actions.move_to_element(results[i])
+            actions.key_down(Keys.CONTROL).click()
+            actions.perform()
 
 g = GoogleMapsCrawler()
 g.main_site()
 g.search('kawiarnie Warszawa')
+g.scroll_down_results()
+g.open_results()

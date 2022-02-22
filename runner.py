@@ -11,7 +11,7 @@ driver = webdriver.Chrome(executable_path='C:\TestFiles\chromedriver.exe')
 driver.implicitly_wait(20)
 driver.get('https://www.google.pl/maps/preview')
 
-# jeśli pojawi się przycisk zgadzam się to go kliknij
+# if pop up button will show - click it with 'agree'
 button = driver.find_element(By.XPATH, '//span[text()="Zgadzam się"]')
 
 if button.is_displayed():
@@ -19,14 +19,12 @@ if button.is_displayed():
 else:
     print('button zgadzam sie is not displayed')
 
-# znajdź input wprowadź swój tekst i wciśnij button wyszukaj
-
+# find input and enter own text
 user_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable((By.ID, 'searchboxinput')))
 user_input.send_keys("Sklep Warszawa")
 time.sleep(3)
 submit_button = driver.find_element(By.XPATH, '//button[@id="searchbox-searchbutton"]')
 submit_button.click()
-# time.sleep(2)
 
 # scroll down all results elements
 results_container = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[contains(@aria-label, "Wyniki dla zapytania")]')))
