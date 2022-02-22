@@ -26,13 +26,24 @@ user_input.send_keys("Sklep Warszawa")
 time.sleep(3)
 submit_button = driver.find_element(By.XPATH, '//button[@id="searchbox-searchbutton"]')
 submit_button.click()
-time.sleep(3)
+# time.sleep(2)
+
+# scroll down all results elements
+results_container = WebDriverWait(driver, 10).until(EC.visibility_of_element_located((By.XPATH, '//div[contains(@aria-label, "Wyniki dla zapytania")]')))
+
+verical_ordinate = 100
+for i in range(0, 31):
+   print(verical_ordinate)
+   driver.execute_script("arguments[0].scrollTop = arguments[1]", results_container, verical_ordinate)
+   verical_ordinate += 100
+   time.sleep(1)
 
 # find div with search results
-elements = driver.find_elements(By.XPATH, '//div[contains(@aria-label, "Wyniki dla zapytania")]/div/div/a')
+results = driver.find_elements(By.XPATH, '//div[contains(@aria-label, "Wyniki dla zapytania")]/div/div/a')
 
-# open first element from 'elements' list in new tab - using Actionchains CTRL+click()
-actions = ActionChains(driver)
-actions.move_to_element(elements[0])
-actions.key_down(Keys.CONTROL).click()
-actions.perform()
+# open all elements from results list in new tab - using Actionchains CTRL+click()
+for i in range(len(results)-1):
+    actions = ActionChains(driver)
+    actions.move_to_element(results[i])
+    actions.key_down(Keys.CONTROL).click()
+    actions.perform()
