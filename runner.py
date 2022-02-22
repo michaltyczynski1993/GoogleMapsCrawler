@@ -45,3 +45,5 @@ for i in range(len(results)-1):
     actions.move_to_element(results[i])
     actions.key_down(Keys.CONTROL).click()
     actions.perform()
+
+    

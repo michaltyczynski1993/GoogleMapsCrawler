@@ -17,6 +17,7 @@ class Crawler(object):
 class GoogleMapsCrawler(Crawler):
 
     def main_site(self):
+        """go to google maps main page and check for localization popup"""
         self.driver.get('https://www.google.pl/maps/preview')
         button = self.driver.find_element(*locators.USER_AGREE)
         if button.is_displayed():
@@ -26,6 +27,7 @@ class GoogleMapsCrawler(Crawler):
     
     
     def search(self, search_data = 'Sklep Warszawa'):
+        """take string to search in google maps results"""
         user_input = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
         user_input.send_keys(search_data)
         time.sleep(3)
@@ -34,6 +36,7 @@ class GoogleMapsCrawler(Crawler):
     
     
     def scroll_down_results(self):
+        """scrolling down all found google maps results"""
         results_container = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locators.RESULTS_CONTAINER))
         verical_ordinate = 100
         for i in range(0, 31):
@@ -43,6 +46,7 @@ class GoogleMapsCrawler(Crawler):
             time.sleep(1)
     
     def open_results(self):
+        """iterate on list of google maps results and open in new tab"""
         results = self.driver.find_elements(*locators.RESULTS)
         
         # open all elements from results list in new tab - using Actionchains CTRL+click()
@@ -54,6 +58,6 @@ class GoogleMapsCrawler(Crawler):
 
 g = GoogleMapsCrawler()
 g.main_site()
-g.search('kawiarnie Warszawa')
+g.search('restauracja witów')
 g.scroll_down_results()
 g.open_results()
