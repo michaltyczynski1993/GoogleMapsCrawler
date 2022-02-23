@@ -56,8 +56,8 @@ class GoogleMapsCrawler(Crawler):
             actions.key_down(Keys.CONTROL).click()
             actions.perform()
 
-g = GoogleMapsCrawler()
-g.main_site()
-g.search('restauracja witów')
-g.scroll_down_results()
-g.open_results()
+# g = GoogleMapsCrawler()
+# g.main_site()
+# g.search('restauracja witów')
+# g.scroll_down_results()
+# g.open_results()
