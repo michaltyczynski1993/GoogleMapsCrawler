@@ -55,14 +55,14 @@ class GoogleMapsCrawler(Crawler):
         results = self.driver.find_elements(*locators.RESULTS)
         
         # open all elements from results list in new tab - using Actionchains CTRL+click()
-        for i in range(len(results)-1):
+        for i in range(len(results)):
             actions = ActionChains(self.driver)
             actions.move_to_element(results[i])
             actions.key_down(Keys.CONTROL).click()
             actions.perform()
 
-g = GoogleMapsCrawler()
-g.main_site()
-g.search('restauracja witów')
-g.scroll_down_results()
-g.open_results()
+# g = GoogleMapsCrawler()
+# g.main_site()
+# g.search('restauracja witów')
+# g.scroll_down_results()
+# g.open_results()
