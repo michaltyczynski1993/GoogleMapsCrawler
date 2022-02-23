@@ -3,6 +3,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
+
 import time
 import locators
 
@@ -10,7 +14,8 @@ class Crawler(object):
     
     
     def __init__(self):
-        self.driver = webdriver.Chrome(executable_path='C:\TestFiles\chromedriver.exe')
+        self.options = Options()
+        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=self.options)
         self.driver.implicitly_wait(30)
 
 
