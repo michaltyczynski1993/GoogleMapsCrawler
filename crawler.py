@@ -30,8 +30,9 @@ class GoogleMapsCrawler(Crawler):
         """take string to search in google maps results"""
         user_input = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
         user_input.send_keys(search_data)
-        time.sleep(3)
-        submit_button = self.driver.find_element(*locators.SEARCH_BUTTON) 
+        # time.sleep(3)
+        # submit_button = self.driver.find_element(*locators.SEARCH_BUTTON) 
+        submit_button = WebDriverWait(self.driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_BUTTON))
         submit_button.click()
     
     
@@ -39,10 +40,9 @@ class GoogleMapsCrawler(Crawler):
         """scrolling down all found google maps results"""
         results_container = WebDriverWait(self.driver, 10).until(EC.visibility_of_element_located(locators.RESULTS_CONTAINER))
         verical_ordinate = 100
-        for i in range(0, 31):
-            print(verical_ordinate)
+        for i in range(0, 17):
             self.driver.execute_script("arguments[0].scrollTop = arguments[1]", results_container, verical_ordinate)
-            verical_ordinate += 100
+            verical_ordinate += 200
             time.sleep(1)
     
     def open_results(self):
@@ -56,8 +56,8 @@ class GoogleMapsCrawler(Crawler):
             actions.key_down(Keys.CONTROL).click()
             actions.perform()
 
-# g = GoogleMapsCrawler()
-# g.main_site()
-# g.search('restauracja witów')
-# g.scroll_down_results()
-# g.open_results()
+g = GoogleMapsCrawler()
+g.main_site()
+g.search('restauracja witów')
+g.scroll_down_results()
+g.open_results()
