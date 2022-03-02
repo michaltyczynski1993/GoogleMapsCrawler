@@ -1,7 +1,4 @@
-from distutils import command
-from pydoc import text
 from tkinter import *
-from turtle import width
 from crawler import GoogleMapsCrawler
 
 class Gui(Frame):

@@ -15,7 +15,7 @@ class Crawler(object):
     
     def __init__(self):
         self.options = Options()
-        self.driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=self.options)
+        self.driver = webdriver.Chrome(service=Service('C:\TestFiles\chromedriver.exe'), options=self.options)
         self.driver.implicitly_wait(30)
 
 
