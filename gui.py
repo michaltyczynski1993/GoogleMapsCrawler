@@ -41,6 +41,8 @@ class Gui(Frame):
         self.g.search(keywords)
         self.g.scroll_down_results()
         self.g.open_results()
+        self.g.results_data_getter()
+        self.g.export_csv()
 
 root = Tk()
 root.title('Google Maps Searcher')

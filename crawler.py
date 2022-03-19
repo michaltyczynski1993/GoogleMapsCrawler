@@ -6,7 +6,7 @@ from selenium.webdriver.common.action_chains import ActionChains
 from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
-
+import csv
 import time
 import locators
 
@@ -20,6 +20,10 @@ class Crawler(object):
 
 
 class GoogleMapsCrawler(Crawler):
+
+    def __init__(self):
+        super(GoogleMapsCrawler, self).__init__()
+        self.csv_data = []
 
     def main_site(self):
         """go to google maps main page and check for localization popup"""
@@ -60,9 +64,39 @@ class GoogleMapsCrawler(Crawler):
             actions.move_to_element(results[i])
             actions.key_down(Keys.CONTROL).click()
             actions.perform()
+    
+    def get_geolocators(self):
+        list = []
+        try:
+            title = self.driver.find_element(*locators.TITLE)
+            adress = self.driver.find_element(*locators.ADRESS)
+            website = self.driver.find_element(*locators.WEBSITE)
+            phone = self.driver.find_element(*locators.PHONE)
+        except:
+            pass
+        
+        try:
+            list.append(title.text)
+            list.append(adress.text)
+            list.append(website.text)
+            list.append(phone.text)
+        except:
+            pass
+        self.csv_data.append(list)
 
-# g = GoogleMapsCrawler()
-# g.main_site()
-# g.search('restauracja witów')
-# g.scroll_down_results()
-# g.open_results()
+    def export_csv(self):
+        header = ['Nazwa', 'Adres', 'Email', 'Telefon']
+        file = open('C:\\Users\\mtycz\\Documents\\trasówka.csv', 'w', newline='', encoding='utf-8')
+        writer = csv.writer(file)
+        writer.writerow(header)
+        writer.writerows(self.csv_data)
+        file.close()
+
+    def results_data_getter(self):
+        handles = self.driver.window_handles
+        for i in range(len(handles)):
+            if i > 0:
+                self.driver.switch_to.window(handles[i])
+                self.get_geolocators()
+        print(self.csv_data)
+
