@@ -1,3 +1,4 @@
+from cgitb import text
 from tkinter import *
 from crawler import GoogleMapsCrawler
 
@@ -12,12 +13,20 @@ class Gui(Frame):
 
     def create_widgets(self):
         self.label = Label(self, text = 'Enter Your Keywords')
-        self.label.config(font = ('Arial', 15))
-        self.label.pack(pady = 20)
+        self.label.config(font = ('Arial', 10))
+        self.label.pack(pady = 5)
 
         # entry field for keyword search input
         self.entry = Entry(self)
-        self.entry.pack(pady= 10, ipadx=40)
+        self.entry.pack(pady= 1, ipadx=4)
+
+        #label for csv file path for exported data
+        self.path_label = Label(self, text='Enter csv file path')
+        self.path_label.config(font = ('Arial', 10))
+        self.path_label.pack(pady=5)
+
+        self.path_entry = Entry(self)
+        self.path_entry.pack(pady=1, ipadx=4)
 
         # create driver instruction label
         self.instruction_label = Label(self, text = 'if browser not open, press "Create Driver" button')
@@ -37,12 +46,13 @@ class Gui(Frame):
         
     def search_google_maps(self):
         keywords = self.entry.get()
+        file_path = self.path_entry.get()
         self.g.main_site()
         self.g.search(keywords)
         self.g.scroll_down_results()
         self.g.open_results()
         self.g.results_data_getter()
-        self.g.export_csv()
+        self.g.export_csv(file_path)
 
 root = Tk()
 root.title('Google Maps Searcher')

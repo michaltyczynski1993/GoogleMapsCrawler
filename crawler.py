@@ -28,11 +28,11 @@ class GoogleMapsCrawler(Crawler):
     def main_site(self):
         """go to google maps main page and check for localization popup"""
         self.driver.get('https://www.google.pl/maps/preview')
-        button = self.driver.find_element(*locators.USER_AGREE)
-        if button.is_displayed():
+        try:
+            button = self.driver.find_element(*locators.USER_AGREE)
             button.click()
-        else:
-            print('button zgadzam sie is not displayed')
+        except:
+            pass
     
     
     def search(self, search_data = 'Sklep Warszawa'):
@@ -66,6 +66,7 @@ class GoogleMapsCrawler(Crawler):
             actions.perform()
     
     def get_geolocators(self):
+        """find geolocators and save in 'list', then export to 'csv_data' list"""
         list = []
         try:
             title = self.driver.find_element(*locators.TITLE)
@@ -84,19 +85,20 @@ class GoogleMapsCrawler(Crawler):
             pass
         self.csv_data.append(list)
 
-    def export_csv(self):
+    def export_csv(self, file_path):
+        """export data from list to csv file"""
         header = ['Nazwa', 'Adres', 'Email', 'Telefon']
-        file = open('C:\\Users\\mtycz\\Documents\\trasówka.csv', 'w', newline='', encoding='utf-8')
+        file = open(file_path, 'w', newline='', encoding='utf-8')
         writer = csv.writer(file)
         writer.writerow(header)
         writer.writerows(self.csv_data)
         file.close()
 
     def results_data_getter(self):
+        """iterate all opend browser's tabs"""
         handles = self.driver.window_handles
         for i in range(len(handles)):
             if i > 0:
                 self.driver.switch_to.window(handles[i])
                 self.get_geolocators()
-        print(self.csv_data)
 
