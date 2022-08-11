@@ -32,7 +32,7 @@ class GoogleMapsCrawler(Crawler):
             button = self.driver.find_element(*locators.USER_AGREE)
             button.click()
         except:
-            pass
+            print('button is not clickable')
     
     
     def search(self, search_data = 'Sklep Warszawa'):
