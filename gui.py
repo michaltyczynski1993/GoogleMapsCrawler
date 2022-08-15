@@ -53,6 +53,7 @@ class Gui(Frame):
         self.g.open_results()
         self.g.results_data_getter()
         self.g.export_csv(file_path)
+        self.g.driver.quit()
 
 root = Tk()
 root.title('Google Maps Searcher')

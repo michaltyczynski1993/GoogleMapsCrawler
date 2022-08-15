@@ -9,12 +9,14 @@ from selenium.webdriver.chrome.service import Service
 import csv
 import time
 import locators
+import timeit
 
 class Crawler(object):
     
     
     def __init__(self):
         self.options = Options()
+        self.options.add_argument("--headless")
         self.driver = webdriver.Chrome(service=Service('C:\TestFiles\chromedriver.exe'), options=self.options)
         self.driver.implicitly_wait(30)
 
@@ -24,9 +26,12 @@ class GoogleMapsCrawler(Crawler):
     def __init__(self):
         super(GoogleMapsCrawler, self).__init__()
         self.csv_data = []
+        self.start = None
+        self.stop = None
 
     def main_site(self):
         """go to google maps main page and check for localization popup"""
+        self.start = timeit.default_timer()
         self.driver.get('https://www.google.pl/maps/preview')
         try:
             button = self.driver.find_element(*locators.USER_AGREE)
@@ -93,6 +98,8 @@ class GoogleMapsCrawler(Crawler):
         writer.writerow(header)
         writer.writerows(self.csv_data)
         file.close()
+        self.stop = timeit.default_timer()
+        print('Time: ', self.stop - self.start)
 
     def results_data_getter(self):
         """iterate all opend browser's tabs"""
