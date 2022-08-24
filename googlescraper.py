@@ -1,10 +1,8 @@
-from re import search
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.action_chains import ActionChains
-from webdriver_manager.chrome import ChromeDriverManager
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import time
@@ -64,6 +62,11 @@ for result in results:
     link = result.get_attribute('href')
     search_links.append(link)
 
+# open every link in link list (scrape data) and close current window
+for link in search_links:
+    driver.get(link)
+    time.sleep(3)
+
 # print the found links (to gmaps sites)
 for link in search_links:
     print(link)
@@ -71,3 +74,4 @@ print(len(search_links))
 
 stop = timeit.default_timer()
 print('Time: ', stop - start)
+driver.quit()
