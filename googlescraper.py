@@ -1,15 +1,12 @@
 from selenium import webdriver
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
-from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import time
 import locators
 import timeit
 #setup
-search_region = input('enter searching region: ')
 search_data = input('enter keywords: ')
 search_links = []
 
@@ -27,17 +24,11 @@ try:
 except:
     print('button is not clickable')
 
-# first data input for locating searching region
-user_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
-user_input.send_keys(search_region)
-submit_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_BUTTON))
-submit_button.click()
-time.sleep(8)
-
 # take string to search in google maps results
 user_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
 user_input.clear()
 user_input.send_keys(search_data)
+submit_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_BUTTON))
 submit_button.click()
 
 # scrolling down all found google maps results
@@ -65,7 +56,13 @@ for result in results:
 # open every link in link list (scrape data) and close current window
 for link in search_links:
     driver.get(link)
-    time.sleep(3)
+    # wait for page to load (title, adress, website) - if not then pass it
+    try:
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.ADRESS))
+        WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.WEBSITE))
+    except:
+        pass
 
 # print the found links (to gmaps sites)
 for link in search_links:
