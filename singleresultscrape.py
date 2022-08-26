@@ -12,8 +12,7 @@ options = Options()
 driver = webdriver.Chrome(service=Service('C:\TestFiles\chromedriver.exe'), options=options)
 driver.implicitly_wait(10)
 
-driver.get('https://www.google.pl/maps/place/Restauracja+Dziki+Zak%C4%85tek/@52.359584,20.9729986,17z/data=!3m1!4b1!4m5!3m4!1s0x471ec824a03e3779:0x12291771fa3d8b4b!8m2!3d52.359584!4d20.9751873')
-
+driver.get('https://www.google.pl/maps/place/Ninja+Bar/@52.3067903,21.0303654,17z/data=!3m1!4b1!4m5!3m4!1s0x471ec9337b2fe86d:0x737b6129293a4844!8m2!3d52.3067903!4d21.0303654?authuser=0&hl=pl')
 try:
     button = driver.find_element(*locators.USER_AGREE)
     button.click()
@@ -24,12 +23,20 @@ except:
 WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
 
 soup = BeautifulSoup(driver.page_source, 'html.parser')
-
+phone_adress_results = soup.find_all('div', class_ = 'Io6YTe')
 #locating elements on single result page
 title = soup.find('h1', class_ = 'DUwDvf')
 rating = soup.find('div', class_ = 'F7nice')
-adress = soup.find('div', class_ = 'Io6YTe')
+category = soup.find('button', class_ = 'DkEaL')
+adress = phone_adress_results[0]
+phone = phone_adress_results[1]
+website = soup.find('div', class_ = 'rogA2c')
 
-print(title.text.strip())
-print(rating.text.strip())
-print(adress.text.strip())
+for result in phone_adress_results:
+    print(result.text.strip())
+# print(title.text.strip())
+# print(rating.text.strip())
+# print(category.text.strip())
+# print(website.text.strip())
+# print(adress.text.strip())
+# print(phone.text.strip())
