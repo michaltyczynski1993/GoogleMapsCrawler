@@ -23,20 +23,18 @@ except:
 WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
 
 soup = BeautifulSoup(driver.page_source, 'html.parser')
-phone_adress_results = soup.find_all('div', class_ = 'Io6YTe')
+# phone_adress_results = soup.find_all('div', class_ = 'Io6YTe')
 #locating elements on single result page
 title = soup.find('h1', class_ = 'DUwDvf')
 rating = soup.find('div', class_ = 'F7nice')
 category = soup.find('button', class_ = 'DkEaL')
-adress = phone_adress_results[0]
-phone = phone_adress_results[1]
+# adress = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'})
+phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'})
 website = soup.find('div', class_ = 'rogA2c')
 
-for result in phone_adress_results:
-    print(result.text.strip())
 # print(title.text.strip())
 # print(rating.text.strip())
 # print(category.text.strip())
 # print(website.text.strip())
 # print(adress.text.strip())
-# print(phone.text.strip())
+print(phone.text.strip())
