@@ -3,6 +3,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
+from bs4 import BeautifulSoup
 import time
 import locators
 import timeit
@@ -22,7 +23,7 @@ try:
     button = driver.find_element(*locators.USER_AGREE)
     button.click()
 except:
-    print('button is not clickable')
+    print('Cookies already accepted')
 
 # take string to search in google maps results
 user_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
@@ -56,11 +57,28 @@ for result in results:
 # open every link in link list (scrape data) and close current window
 for link in search_links:
     driver.get(link)
-    # wait for page to load (title, adress, website) - if not then pass it
+    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
+    soup = BeautifulSoup(driver.page_source, 'html.parser')
+    # wait for page to load (title, rating, category, adress, phone, website) - if not then pass it
     try:
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.ADRESS))
-        WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.WEBSITE))
+        title = soup.find('h1', class_ = 'DUwDvf')
+        rating = soup.find('div', class_ = 'F7nice')
+        category = soup.find('button', {'jsaction':'pane.rating.category'})
+        adress = soup.find('button', {'data-item-id':'address'})
+        phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
+        website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
+        
+    except:
+        pass
+
+    try:
+        print(title.text.strip())
+        print(rating.text.strip())
+        print(category.text.strip())
+        print(adress.text.strip())
+        print(website.text.strip())
+        print(phone.text.strip())
+        print('')
     except:
         pass
 

@@ -5,14 +5,16 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 import locators
 from bs4 import BeautifulSoup
+import timeit
 
 
 options = Options()
-# options.add_argument("--headless")
-driver = webdriver.Chrome(service=Service('C:\TestFiles\chromedriver.exe'), options=options)
+options.add_argument("--headless")
+driver = webdriver.Chrome(service=Service('/home/mtycz/Dokumenty/chromedriver'), options=options)
 driver.implicitly_wait(10)
 
-driver.get('https://www.google.pl/maps/place/Pizzeria+San+Giovanni+-+pizza+na+telefon+Targ%C3%B3wek/@52.2916903,21.0505503,17z/data=!3m1!4b1!4m5!3m4!1s0x471ecebe9bdb2c75:0xe6135a0b32f9fdd5!8m2!3d52.2916903!4d21.0505503?authuser=0&hl=pl')
+start = timeit.default_timer()
+driver.get('https://www.google.pl/maps/place/Byczek+-+sklep+w%C4%99dliny,+ryby,+sery,+warzywa,+produkty+bio,+eko,+zdrowa+%C5%BCywno%C5%9B%C4%87/data=!4m7!3m6!1s0x471eceb1c1c26c5b:0x3c5db4a8cbbcdcd4!8m2!3d52.2904047!4d21.0312232!16s%2Fg%2F11hbnv7870!19sChIJW2zCwbHOHkcR1Ny8y6i0XTw?authuser=0&hl=pl&rclk=1')
 try:
     button = driver.find_element(*locators.USER_AGREE)
     button.click()
@@ -25,16 +27,25 @@ WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE)
 soup = BeautifulSoup(driver.page_source, 'html.parser')
 # phone_adress_results = soup.find_all('div', class_ = 'Io6YTe')
 #locating elements on single result page
-title = soup.find('h1', class_ = 'DUwDvf')
-rating = soup.find('div', class_ = 'F7nice')
-category = soup.find('button', {'jsaction':'pane.rating.category'})
-adress = soup.find('button', {'data-item-id':'address'})
-phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
-website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
+try:
+    title = soup.find('h1', class_ = 'DUwDvf')
+    rating = soup.find('div', class_ = 'F7nice')
+    category = soup.find('button', {'jsaction':'pane.rating.category'})
+    adress = soup.find('button', {'data-item-id':'address'})
+    phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
+    website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
+except:
+    pass
 
-print(title.text.strip())
-print(rating.text.strip())
-print(category.text.strip())
-print(adress.text.strip())
-print(website.text.strip())
-print(phone.text.strip())
+try:
+    print(title.text.strip())
+    print(rating.text.strip())
+    print(category.text.strip())
+    print(adress.text.strip())
+    print(website.text.strip())
+    print(phone.text.strip())
+except:
+    pass
+stop = timeit.default_timer()
+print('Time: ', stop - start)
+
