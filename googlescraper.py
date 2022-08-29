@@ -7,9 +7,12 @@ from bs4 import BeautifulSoup
 import time
 import locators
 import timeit
+import pandas as pd
 #setup
 search_data = input('enter keywords: ')
 search_links = []
+#list to store data
+templist = []
 
 options = Options()
 # options.add_argument("--headless")
@@ -54,6 +57,7 @@ for result in results:
     link = result.get_attribute('href')
     search_links.append(link)
 
+print(len(search_links))
 # open every link in link list (scrape data) and close current window
 for link in search_links:
     driver.get(link)
@@ -69,24 +73,31 @@ for link in search_links:
         website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
         
     except:
-        pass
+        title = 'NULL'
+        rating = 'NULL'
+        category = 'NULL'
+        adress = 'NULL'
+        phone = 'NULL'
+        website = 'NULL'
+
 
     try:
-        print(title.text.strip())
-        print(rating.text.strip())
-        print(category.text.strip())
-        print(adress.text.strip())
-        print(website.text.strip())
-        print(phone.text.strip())
-        print('')
+        Table_dict={ 'title': title.text.strip(),
+                    'rating': rating.text.strip(),
+                    'category': category.text.strip(),
+                    'adress': adress.text.strip(),
+                    'phone': phone.text.strip(),
+                    'website': website.text.strip()}
+            
+        templist.append(Table_dict)
     except:
         pass
 
-# print the found links (to gmaps sites)
-for link in search_links:
-    print(link)
-print(len(search_links))
+# export data to csv
+df = pd.DataFrame(templist)
+df.to_csv('table.csv')
 
 stop = timeit.default_timer()
 print('Time: ', stop - start)
 driver.quit()
+
