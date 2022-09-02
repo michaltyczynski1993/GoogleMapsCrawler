@@ -7,16 +7,18 @@ from bs4 import BeautifulSoup
 import time
 import locators
 import timeit
-import pandas as pd
+import csv
+
 #setup
 search_data = input('enter keywords: ')
 search_links = []
 #list to store data
-templist = []
+items_list = []
+headers = ['Title', 'Rating', 'Category', 'Adress','Telefon', 'Website', 'Link']
 
 options = Options()
-# options.add_argument("--headless")
-driver = webdriver.Chrome(service=Service('C:\TestFiles\chromedriver.exe'), options=options)
+options.add_argument("--headless")
+driver = webdriver.Chrome(service=Service('/home/mtycz/Dokumenty/chromedriver'), options=options)
 driver.implicitly_wait(10)
 
 # go to google maps main page and check for localization popup
@@ -58,44 +60,48 @@ for result in results:
     search_links.append(link)
 
 print(len(search_links))
+for link in search_links:
+    print(link)
+    print('')
 # open every link in link list (scrape data) and close current window
 for link in search_links:
+    item = []
     driver.get(link)
     WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     # wait for page to load (title, rating, category, adress, phone, website) - if not then pass it
     try:
         title = soup.find('h1', class_ = 'DUwDvf')
-        rating = soup.find('div', class_ = 'F7nice')
+        rating_container = soup.find('div', class_ = 'F7nice')
+        rating = rating_container.find('span')
         category = soup.find('button', {'jsaction':'pane.rating.category'})
         adress = soup.find('button', {'data-item-id':'address'})
         phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
         website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
         
     except:
-        title = 'NULL'
-        rating = 'NULL'
-        category = 'NULL'
-        adress = 'NULL'
-        phone = 'NULL'
-        website = 'NULL'
-
+        pass
 
     try:
-        Table_dict={ 'title': title.text.strip(),
-                    'rating': rating.text.strip(),
-                    'category': category.text.strip(),
-                    'adress': adress.text.strip(),
-                    'phone': phone.text.strip(),
-                    'website': website.text.strip()}
-            
-        templist.append(Table_dict)
+        item.append(title.text.strip())
+        item.append(rating.text.strip())
+        item.append(category.text.strip())
+        item.append(adress.text.strip())
+        item.append(phone.text.strip())
+        item.append(website.text.strip())
+        item.append(link)
     except:
         pass
 
+    items_list.append(item)
+
+print(items_list)
 # export data to csv
-df = pd.DataFrame(templist)
-df.to_csv('table.csv')
+file = open('table.csv', 'w', newline='', encoding='utf-8')
+writer = csv.writer(file)
+writer.writerow(headers)
+writer.writerows(items_list)
+file.close()
 
 stop = timeit.default_timer()
 print('Time: ', stop - start)
