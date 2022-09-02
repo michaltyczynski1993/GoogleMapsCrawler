@@ -72,6 +72,7 @@ for link in search_links:
     # wait for page to load (title, rating, category, adress, phone, website) - if not then pass it
     try:
         title = soup.find('h1', class_ = 'DUwDvf')
+        # element that contains the 'span' with rating text
         rating_container = soup.find('div', class_ = 'F7nice')
         rating = rating_container.find('span')
         category = soup.find('button', {'jsaction':'pane.rating.category'})
