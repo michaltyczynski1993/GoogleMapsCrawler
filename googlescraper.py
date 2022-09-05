@@ -18,8 +18,8 @@ headers = ['Title', 'Rating', 'Category', 'Adress','Telefon', 'Website', 'Link']
 
 options = Options()
 options.add_argument("--headless")
-driver = webdriver.Chrome(service=Service('/home/mtycz/Dokumenty/chromedriver'), options=options)
-driver.implicitly_wait(10)
+driver = webdriver.Chrome(service=Service('C:\TestFiles\chromedriver.exe'), options=options)
+driver.implicitly_wait(20)
 
 # go to google maps main page and check for localization popup
 start = timeit.default_timer()
@@ -63,6 +63,7 @@ print(len(search_links))
 for link in search_links:
     print(link)
     print('')
+    
 # open every link in link list (scrape data) and close current window
 for link in search_links:
     item = []
@@ -79,6 +80,7 @@ for link in search_links:
         adress = soup.find('button', {'data-item-id':'address'})
         phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
         website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
+        page_link = driver.current_url
         
     except:
         pass
@@ -90,13 +92,14 @@ for link in search_links:
         item.append(adress.text.strip())
         item.append(phone.text.strip())
         item.append(website.text.strip())
-        item.append(link)
+        item.append(page_link)
     except:
         pass
 
     items_list.append(item)
 
 print(items_list)
+
 # export data to csv
 file = open('table.csv', 'w', newline='', encoding='utf-8')
 writer = csv.writer(file)
