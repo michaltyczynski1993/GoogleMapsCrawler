@@ -80,7 +80,6 @@ for link in search_links:
         adress = soup.find('button', {'data-item-id':'address'})
         phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
         website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
-        page_link = driver.current_url
         
     except:
         pass
@@ -92,7 +91,7 @@ for link in search_links:
         item.append(adress.text.strip())
         item.append(phone.text.strip())
         item.append(website.text.strip())
-        item.append(page_link)
+        item.append(link)
     except:
         pass
 
