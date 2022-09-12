@@ -14,7 +14,7 @@ search_data = input('enter keywords: ')
 search_links = []
 #list to store data
 items_list = []
-headers = ['Title', 'Rating', 'Category', 'Adress','Telefon', 'Website', 'Link']
+headers = ['Title', 'Rating', 'Category', 'Adress','Link', 'Telefon', 'Website']
 
 options = Options()
 options.add_argument("--headless")
@@ -31,14 +31,14 @@ except:
     print('Cookies already accepted')
 
 # take string to search in google maps results
-user_input = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
+user_input = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locators.SEARCH_INPUT))
 user_input.clear()
 user_input.send_keys(search_data)
-submit_button = WebDriverWait(driver, 10).until(EC.element_to_be_clickable(locators.SEARCH_BUTTON))
+submit_button = WebDriverWait(driver, 30).until(EC.element_to_be_clickable(locators.SEARCH_BUTTON))
 submit_button.click()
 
 # scrolling down all found google maps results
-results_container = WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.RESULTS_CONTAINER))
+results_container = WebDriverWait(driver, 30).until(EC.visibility_of_element_located(locators.RESULTS_CONTAINER))
 while True:
     # Get scroll height
     last_height = driver.execute_script("return arguments[0].scrollHeight", results_container)
@@ -68,7 +68,7 @@ for link in search_links:
 for link in search_links:
     item = []
     driver.get(link)
-    WebDriverWait(driver, 10).until(EC.visibility_of_element_located(locators.TITLE))
+    WebDriverWait(driver, 30).until(EC.visibility_of_element_located(locators.TITLE))
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     # wait for page to load (title, rating, category, adress, phone, website) - if not then pass it
     try:
@@ -78,7 +78,10 @@ for link in search_links:
         rating = rating_container.find('span')
         category = soup.find('button', {'jsaction':'pane.rating.category'})
         adress = soup.find('button', {'data-item-id':'address'})
-        phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
+        try:
+            phone = soup.find('button', {'data-tooltip':'Kopiuj numer telefonu'}) # ---> better way to find specific locator
+        except:
+            pass
         website = soup.find('a', {'data-tooltip':'Otwórz witrynę'})
         
     except:
@@ -89,9 +92,9 @@ for link in search_links:
         item.append(rating.text.strip())
         item.append(category.text.strip())
         item.append(adress.text.strip())
-        item.append(phone.text.strip())
-        item.append(website.text.strip())
         item.append(link)
+        item.append(phone.text.strip())
+        item.append(website.get('href'))
     except:
         pass
 
