@@ -68,7 +68,10 @@ for link in search_links:
 for link in search_links:
     item = []
     driver.get(link)
-    WebDriverWait(driver, 30).until(EC.visibility_of_element_located(locators.TITLE))
+    try:
+        WebDriverWait(driver, 30).until(EC.visibility_of_element_located(locators.TITLE))
+    except:
+        pass
     soup = BeautifulSoup(driver.page_source, 'html.parser')
     # wait for page to load (title, rating, category, adress, phone, website) - if not then pass it
     try:
